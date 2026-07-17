@@ -1,5 +1,6 @@
 package com.mostawdai.feature.materials
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ import com.mostawdai.domain.model.Material
 @Composable
 fun MaterialsListScreen(
     onAddMaterialClick: () -> Unit,
+    onMaterialClick: (Long) -> Unit,
     viewModel: MaterialsListViewModel = hiltViewModel()
 ) {
     val summary by viewModel.summary.collectAsState()
@@ -81,7 +83,7 @@ fun MaterialsListScreen(
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(summary.materials, key = { it.id }) { material ->
-                        MaterialRow(material)
+                        MaterialRow(material, onClick = { onMaterialClick(material.id) })
                         HorizontalDivider()
                     }
                 }
@@ -91,10 +93,11 @@ fun MaterialsListScreen(
 }
 
 @Composable
-private fun MaterialRow(material: Material) {
+private fun MaterialRow(material: Material, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
