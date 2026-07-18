@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mostawdai.feature.backup.BackupScreen
 import com.mostawdai.feature.materials.AddMaterialScreen
+import com.mostawdai.feature.materials.EditMaterialScreen
 import com.mostawdai.feature.materials.MaterialDetailScreen
 import com.mostawdai.feature.materials.MaterialsListScreen
 
@@ -31,8 +32,22 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
         composable(
             route = Routes.MATERIAL_DETAIL,
             arguments = listOf(navArgument("materialId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val materialId = backStackEntry.arguments?.getLong("materialId") ?: 0L
+            MaterialDetailScreen(
+                onBack = { navController.popBackStack() },
+                onEditClick = { navController.navigate(Routes.editMaterial(materialId)) }
+            )
+        }
+        composable(
+            route = Routes.EDIT_MATERIAL,
+            arguments = listOf(navArgument("materialId") { type = NavType.LongType })
         ) {
-            MaterialDetailScreen(onBack = { navController.popBackStack() })
+            EditMaterialScreen(
+                onSaved = { navController.popBackStack() },
+                onDeleted = { navController.popBackStack(Routes.MATERIALS_LIST, false) },
+                onCancel = { navController.popBackStack() }
+            )
         }
         composable(Routes.BACKUP) {
             BackupScreen(onBack = { navController.popBackStack() })
