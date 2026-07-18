@@ -28,6 +28,11 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/mostawdai-release.keystore
 
+      - name: Verify keystore file (diagnostic only)
+        run: |
+          ls -la app/mostawdai-release.keystore
+          file app/mostawdai-release.keystore
+
       - name: Build debug APK
         env:
           VERSION_CODE: ${{ github.run_number }}
