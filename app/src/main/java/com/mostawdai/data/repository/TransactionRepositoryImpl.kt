@@ -24,4 +24,17 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun getAllTransactionsInRange(startDate: Long, endDate: Long): List<StockTransaction> =
         dao.getAllInRange(startDate, endDate).map { it.toDomain() }
+
+    override suspend fun getTransactionById(id: Long): StockTransaction? =
+        dao.getById(id)?.toDomain()
+
+    override suspend fun updateTransaction(transaction: StockTransaction) =
+        dao.update(transaction.toEntity())
+
+    override suspend fun deleteTransaction(id: Long) =
+        dao.deleteById(id)
+
+    override fun observeTotalStockInCost(): Flow<Double> = dao.observeTotalStockInCost()
+
+    override fun observeTotalSalesRevenue(): Flow<Double> = dao.observeTotalSalesRevenue()
 }

@@ -12,6 +12,7 @@ import com.mostawdai.feature.materials.AddMaterialScreen
 import com.mostawdai.feature.materials.EditMaterialScreen
 import com.mostawdai.feature.materials.MaterialDetailScreen
 import com.mostawdai.feature.materials.MaterialsListScreen
+import com.mostawdai.feature.profit.ProfitScreen
 import com.mostawdai.feature.sales.SalesReportScreen
 import com.mostawdai.feature.settings.SettingsScreen
 
@@ -24,7 +25,8 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
                 onMaterialClick = { id -> navController.navigate(Routes.materialDetail(id)) },
                 onBackupClick = { navController.navigate(Routes.BACKUP) },
                 onSalesClick = { navController.navigate(Routes.SALES_REPORT) },
-                onSettingsClick = { navController.navigate(Routes.SETTINGS) }
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) },
+                onProfitClick = { navController.navigate(Routes.PROFIT) }
             )
         }
         composable(Routes.ADD_MATERIAL) {
@@ -61,6 +63,9 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(Routes.SALES_REPORT) {
             SalesReportScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.PROFIT) {
+            ProfitScreen(onBack = { navController.popBackStack() })
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +30,7 @@ fun MaterialsListScreen(
     onBackupClick: () -> Unit,
     onSalesClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onProfitClick: () -> Unit,
     viewModel: MaterialsListViewModel = hiltViewModel()
 ) {
     val summary by viewModel.summary.collectAsState()
@@ -44,6 +46,9 @@ fun MaterialsListScreen(
             TopAppBar(
                 title = { Text("مستودعي") },
                 actions = {
+                    IconButton(onClick = onProfitClick) {
+                        Icon(Icons.Default.TrendingUp, contentDescription = "الأرباح")
+                    }
                     IconButton(onClick = onSalesClick) {
                         Icon(Icons.Default.ShoppingCart, contentDescription = "نظام المبيعات")
                     }
@@ -77,8 +82,16 @@ fun MaterialsListScreen(
                         "%.2f".format(summary.totalInventoryValue),
                         style = MaterialTheme.typography.titleLarge
                     )
+                    Spacer(Modifier.height(8.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(8.dp))
+                    Text("إجمالي المبلغ المدفوع للمواد", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "%.2f".format(summary.totalPaidForMaterials),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                     if (summary.lowStockCount > 0) {
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(8.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Default.Warning,

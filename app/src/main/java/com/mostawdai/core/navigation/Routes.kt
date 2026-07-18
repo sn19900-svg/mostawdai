@@ -8,6 +8,7 @@ object Routes {
     const val BACKUP = "backup"
     const val SETTINGS = "settings"
     const val SALES_REPORT = "sales_report"
+    const val PROFIT = "profit"
 
     fun materialDetail(materialId: Long) = "material_detail/$materialId"
     fun editMaterial(materialId: Long) = "edit_material/$materialId"
