@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import android.content.Context
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,8 +21,6 @@ fun BackupScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val prefs = remember { context.getSharedPreferences("mostawdai_prefs", Context.MODE_PRIVATE) }
-    var lockEnabled by remember { mutableStateOf(prefs.getBoolean("app_lock_enabled", true)) }
     var showImportConfirm by remember { mutableStateOf(false) }
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -64,25 +61,6 @@ fun BackupScreen(
             modifier = Modifier.padding(padding).fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("الأمان", style = MaterialTheme.typography.titleMedium)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-            ) {
-                Text("قفل التطبيق ببصمة الإصبع عند الفتح")
-                Switch(
-                    checked = lockEnabled,
-                    onCheckedChange = { checked ->
-                        lockEnabled = checked
-                        prefs.edit().putBoolean("app_lock_enabled", checked).apply()
-                    }
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-            HorizontalDivider()
-            Spacer(Modifier.height(8.dp))
-
             Text("تقارير", style = MaterialTheme.typography.titleMedium)
 
             Button(

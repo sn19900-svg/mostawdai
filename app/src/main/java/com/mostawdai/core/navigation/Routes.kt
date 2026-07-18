@@ -6,6 +6,8 @@ object Routes {
     const val MATERIAL_DETAIL = "material_detail/{materialId}"
     const val EDIT_MATERIAL = "edit_material/{materialId}"
     const val BACKUP = "backup"
+    const val SETTINGS = "settings"
+    const val SALES_REPORT = "sales_report"
 
     fun materialDetail(materialId: Long) = "material_detail/$materialId"
     fun editMaterial(materialId: Long) = "edit_material/$materialId"

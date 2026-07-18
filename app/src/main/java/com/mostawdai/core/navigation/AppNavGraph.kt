@@ -12,6 +12,8 @@ import com.mostawdai.feature.materials.AddMaterialScreen
 import com.mostawdai.feature.materials.EditMaterialScreen
 import com.mostawdai.feature.materials.MaterialDetailScreen
 import com.mostawdai.feature.materials.MaterialsListScreen
+import com.mostawdai.feature.sales.SalesReportScreen
+import com.mostawdai.feature.settings.SettingsScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController = rememberNavController()) {
@@ -20,7 +22,9 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
             MaterialsListScreen(
                 onAddMaterialClick = { navController.navigate(Routes.ADD_MATERIAL) },
                 onMaterialClick = { id -> navController.navigate(Routes.materialDetail(id)) },
-                onBackupClick = { navController.navigate(Routes.BACKUP) }
+                onBackupClick = { navController.navigate(Routes.BACKUP) },
+                onSalesClick = { navController.navigate(Routes.SALES_REPORT) },
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) }
             )
         }
         composable(Routes.ADD_MATERIAL) {
@@ -51,6 +55,12 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(Routes.BACKUP) {
             BackupScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SETTINGS) {
+            SettingsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SALES_REPORT) {
+            SalesReportScreen(onBack = { navController.popBackStack() })
         }
     }
 }

@@ -40,7 +40,7 @@ class ExportRepositoryImpl @Inject constructor(
     private fun timestamp(): String =
         SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
 
-    // ---------- Excel ----------
+    // ---------- Excel: المخزون الكامل ----------
 
     override suspend fun exportInventoryToExcel(): File = withContext(Dispatchers.IO) {
         val materials = materialDao.getAllOnce()
@@ -84,7 +84,7 @@ class ExportRepositoryImpl @Inject constructor(
         file
     }
 
-    // ---------- PDF ----------
+    // ---------- PDF: تقرير المخزون ----------
 
     override suspend fun exportInventoryToPdf(): File = withContext(Dispatchers.IO) {
         val materials = materialDao.getAllOnce()
@@ -138,7 +138,124 @@ class ExportRepositoryImpl @Inject constructor(
         file
     }
 
-    // ---------- Full backup (JSON) ----------
+    // ---------- Excel: تقرير المبيعات لفترة ----------
+
+    override suspend fun exportSalesReportToExcel(startDate: Long, endDate: Long): File = withContext(Dispatchers.IO) {
+        val sales = transactionDao.getSalesInRange(startDate, endDate)
+        val file = File(exportsDir(), "mostawdai_sales_${timestamp()}.xlsx")
+        FileOutputStream(file).use { fos ->
+            val wb = Workbook(fos, "مستودعي", "1.0")
+            val sheet = wb.newWorksheet("المبيعات")
+            val headers = listOf("التاريخ", "المادة", "الكمية", "التكلفة للوحدة", "سعر البيع", "الإيراد", "الربح", "ملاحظة")
+            headers.forEachIndexed { col, h -> sheet.value(0, col, h) }
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+            var totalRevenue = 0.0
+            var totalCost = 0.0
+            var totalProfit = 0.0
+
+            sales.forEachIndexed { index, t ->
+                val row = index + 1
+                val revenue = (t.sellingPricePerUnit ?: 0.0) * t.quantity
+                val profit = revenue - t.totalCost
+                totalRevenue += revenue
+                totalCost += t.totalCost
+                totalProfit += profit
+
+                sheet.value(row, 0, dateFormat.format(Date(t.date)))
+                sheet.value(row, 1, t.materialNameSnapshot)
+                sheet.value(row, 2, t.quantity)
+                sheet.value(row, 3, t.unitCost)
+                sheet.value(row, 4, t.sellingPricePerUnit ?: 0.0)
+                sheet.value(row, 5, revenue)
+                sheet.value(row, 6, profit)
+                sheet.value(row, 7, t.note)
+            }
+
+            val totalsRow = sales.size + 2
+            sheet.value(totalsRow, 1, "الإجمالي")
+            sheet.value(totalsRow, 5, totalRevenue)
+            sheet.value(totalsRow, 6, totalProfit)
+
+            wb.finish()
+        }
+        file
+    }
+
+    // ---------- PDF: تقرير المبيعات لفترة ----------
+
+    override suspend fun exportSalesReportToPdf(startDate: Long, endDate: Long): File = withContext(Dispatchers.IO) {
+        val sales = transactionDao.getSalesInRange(startDate, endDate)
+        val file = File(exportsDir(), "mostawdai_sales_report_${timestamp()}.pdf")
+
+        val pageWidth = 595
+        val pageHeight = 842
+        val marginLeft = 40f
+        val lineHeight = 22f
+        val document = PdfDocument()
+
+        val titlePaint = Paint().apply { textSize = 18f; isFakeBoldText = true }
+        val headerPaint = Paint().apply { textSize = 12f; isFakeBoldText = true }
+        val bodyPaint = Paint().apply { textSize = 11f }
+
+        var pageNumber = 1
+        var page = document.startPage(PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create())
+        var canvas: Canvas = page.canvas
+        var y = 50f
+
+        val periodFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        canvas.drawText("تقرير المبيعات - مستودعي", marginLeft, y, titlePaint)
+        y += 20f
+        canvas.drawText(
+            "من ${periodFormat.format(Date(startDate))} إلى ${periodFormat.format(Date(endDate))}",
+            marginLeft, y, bodyPaint
+        )
+        y += lineHeight * 1.5f
+
+        canvas.drawText("التاريخ | المادة | الكمية | التكلفة | سعر البيع | الربح", marginLeft, y, headerPaint)
+        y += lineHeight
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+        var totalRevenue = 0.0
+        var totalCost = 0.0
+        var totalProfit = 0.0
+
+        for (t in sales) {
+            if (y > pageHeight - 90f) {
+                document.finishPage(page)
+                pageNumber++
+                page = document.startPage(PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create())
+                canvas = page.canvas
+                y = 50f
+            }
+            val revenue = (t.sellingPricePerUnit ?: 0.0) * t.quantity
+            val profit = revenue - t.totalCost
+            totalRevenue += revenue
+            totalCost += t.totalCost
+            totalProfit += profit
+
+            val line = "%s | %s | %.2f | %.2f | %.2f | %.2f".format(
+                dateFormat.format(Date(t.date)), t.materialNameSnapshot, t.quantity,
+                t.totalCost, t.sellingPricePerUnit ?: 0.0, profit
+            )
+            canvas.drawText(line, marginLeft, y, bodyPaint)
+            y += lineHeight
+        }
+
+        y += lineHeight
+        canvas.drawText("إجمالي الإيراد: %.2f".format(totalRevenue), marginLeft, y, headerPaint)
+        y += lineHeight
+        canvas.drawText("إجمالي التكلفة: %.2f".format(totalCost), marginLeft, y, headerPaint)
+        y += lineHeight
+        canvas.drawText("صافي الربح: %.2f".format(totalProfit), marginLeft, y, headerPaint)
+
+        document.finishPage(page)
+        FileOutputStream(file).use { document.writeTo(it) }
+        document.close()
+        file
+    }
+
+    // ---------- نسخة احتياطية كاملة (JSON) ----------
 
     override suspend fun exportFullBackup(): File = withContext(Dispatchers.IO) {
         val materials = materialDao.getAllOnce()
@@ -192,7 +309,6 @@ class ExportRepositoryImpl @Inject constructor(
                     return@withContext OperationResult.Failure("الملف غير صالح: تنسيق نسخة احتياطية غير معروف")
                 }
 
-                // استبدال كامل: حذف البيانات الحالية أولاً
                 transactionDao.deleteAll()
                 materialDao.deleteAll()
 

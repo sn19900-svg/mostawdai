@@ -11,4 +11,6 @@ interface ExportRepository {
     suspend fun exportInventoryToPdf(): File
     suspend fun exportFullBackup(): File
     suspend fun importFullBackup(inputStream: InputStream): OperationResult<ImportSummary>
+    suspend fun exportSalesReportToExcel(startDate: Long, endDate: Long): File
+    suspend fun exportSalesReportToPdf(startDate: Long, endDate: Long): File
 }
