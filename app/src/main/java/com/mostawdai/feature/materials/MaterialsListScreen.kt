@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mostawdai.domain.model.Material
+import com.mostawdai.feature.update.UpdateBanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +63,8 @@ fun MaterialsListScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+
+            UpdateBanner()
 
             Card(
                 modifier = Modifier

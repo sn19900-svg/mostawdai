@@ -3,9 +3,11 @@ package com.mostawdai.di
 import com.mostawdai.data.export.ExportRepositoryImpl
 import com.mostawdai.data.repository.MaterialRepositoryImpl
 import com.mostawdai.data.repository.TransactionRepositoryImpl
+import com.mostawdai.data.update.UpdateRepositoryImpl
 import com.mostawdai.domain.repository.ExportRepository
 import com.mostawdai.domain.repository.MaterialRepository
 import com.mostawdai.domain.repository.TransactionRepository
+import com.mostawdai.domain.repository.UpdateRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindExportRepository(impl: ExportRepositoryImpl): ExportRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUpdateRepository(impl: UpdateRepositoryImpl): UpdateRepository
 }

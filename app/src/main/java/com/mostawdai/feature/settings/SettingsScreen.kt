@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mostawdai.BuildConfig
 import com.mostawdai.data.local.ThemeMode
+import com.mostawdai.feature.update.UpdateViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,6 +24,9 @@ fun SettingsScreen(
 ) {
     val lockEnabled by viewModel.lockEnabled.collectAsState()
     val themeMode by viewModel.themeMode.collectAsState()
+    val updateViewModel: UpdateViewModel = hiltViewModel()
+    val updateInfo by updateViewModel.updateInfo.collectAsState()
+    val isChecking by updateViewModel.isChecking.collectAsState()
 
     Scaffold(
         topBar = {
@@ -70,6 +75,29 @@ fun SettingsScreen(
             }
             ThemeOptionRow("حسب إعدادات الجهاز", selected = themeMode == ThemeMode.SYSTEM) {
                 viewModel.setThemeMode(ThemeMode.SYSTEM)
+            }
+
+            Spacer(Modifier.height(24.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(24.dp))
+
+            Text("التحديثات", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "النسخة الحالية: ${BuildConfig.VERSION_NAME}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(Modifier.height(8.dp))
+            Button(onClick = { updateViewModel.checkForUpdate() }, enabled = !isChecking) {
+                Text(if (isChecking) "جاري التحقق..." else "تحقق من التحديثات")
+            }
+            if (updateInfo == null && !isChecking) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "أنت تستخدم أحدث نسخة",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

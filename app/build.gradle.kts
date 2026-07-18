@@ -6,25 +6,34 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
-}
-
 android {
     namespace = "com.mostawdai"
     compileSdk = 36
+
+    signingConfigs {
+        getByName("debug") {
+            val keystoreFile = file("mostawdai-release.keystore")
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword = System.getenv("KEY_PASSWORD") ?: "android"
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.mostawdai"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = (System.getenv("VERSION_CODE") ?: "1").toInt()
+        versionName = System.getenv("VERSION_NAME") ?: "1.0.0"
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -36,8 +45,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
