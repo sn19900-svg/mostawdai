@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,13 +25,21 @@ import com.mostawdai.domain.model.Material
 fun MaterialsListScreen(
     onAddMaterialClick: () -> Unit,
     onMaterialClick: (Long) -> Unit,
+    onBackupClick: () -> Unit,
     viewModel: MaterialsListViewModel = hiltViewModel()
 ) {
     val summary by viewModel.summary.collectAsState()
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("مستودعي") })
+            TopAppBar(
+                title = { Text("مستودعي") },
+                actions = {
+                    IconButton(onClick = onBackupClick) {
+                        Icon(Icons.Default.Share, contentDescription = "تصدير ونسخ احتياطي")
+                    }
+                }
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddMaterialClick) {

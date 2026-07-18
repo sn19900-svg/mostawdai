@@ -68,4 +68,5 @@ dependencies {
     ksp("androidx.room:room-compiler:2.8.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("org.dhatim:fastexcel:0.20.2")
 }

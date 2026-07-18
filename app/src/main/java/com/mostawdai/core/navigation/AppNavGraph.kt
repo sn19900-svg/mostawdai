@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mostawdai.feature.backup.BackupScreen
 import com.mostawdai.feature.materials.AddMaterialScreen
 import com.mostawdai.feature.materials.MaterialDetailScreen
 import com.mostawdai.feature.materials.MaterialsListScreen
@@ -17,7 +18,8 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
         composable(Routes.MATERIALS_LIST) {
             MaterialsListScreen(
                 onAddMaterialClick = { navController.navigate(Routes.ADD_MATERIAL) },
-                onMaterialClick = { id -> navController.navigate(Routes.materialDetail(id)) }
+                onMaterialClick = { id -> navController.navigate(Routes.materialDetail(id)) },
+                onBackupClick = { navController.navigate(Routes.BACKUP) }
             )
         }
         composable(Routes.ADD_MATERIAL) {
@@ -31,6 +33,9 @@ fun AppNavGraph(navController: NavHostController = rememberNavController()) {
             arguments = listOf(navArgument("materialId") { type = NavType.LongType })
         ) {
             MaterialDetailScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.BACKUP) {
+            BackupScreen(onBack = { navController.popBackStack() })
         }
     }
 }

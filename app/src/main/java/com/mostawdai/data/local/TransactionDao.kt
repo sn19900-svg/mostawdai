@@ -16,6 +16,12 @@ interface TransactionDao {
     @Query("SELECT * FROM stock_transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
     suspend fun getAllInRange(startDate: Long, endDate: Long): List<StockTransactionEntity>
 
+    @Query("SELECT * FROM stock_transactions ORDER BY date ASC")
+    suspend fun getAllOnce(): List<StockTransactionEntity>
+
     @Insert
     suspend fun insert(transaction: StockTransactionEntity): Long
+
+    @Query("DELETE FROM stock_transactions")
+    suspend fun deleteAll()
 }
