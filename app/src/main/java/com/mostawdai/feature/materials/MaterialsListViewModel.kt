@@ -19,6 +19,11 @@ class MaterialsListViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = InventorySummary(emptyList(), 0.0, 0)
+            initialValue = InventorySummary(
+                materials = emptyList(),
+                totalInventoryValue = 0.0,
+                lowStockCount = 0,
+                totalPaidForMaterials = 0.0
+            )
         )
 }

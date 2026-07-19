@@ -10,7 +10,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -47,7 +47,7 @@ fun MaterialsListScreen(
                 title = { Text("مستودعي") },
                 actions = {
                     IconButton(onClick = onProfitClick) {
-                        Icon(Icons.Default.TrendingUp, contentDescription = "الأرباح")
+                        Icon(Icons.Default.Info, contentDescription = "الأرباح")
                     }
                     IconButton(onClick = onSalesClick) {
                         Icon(Icons.Default.ShoppingCart, contentDescription = "نظام المبيعات")
