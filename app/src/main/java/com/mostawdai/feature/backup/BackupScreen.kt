@@ -30,9 +30,12 @@ fun BackupScreen(
             viewModel.reportMessage("لم يتم اختيار أي ملف")
         } else {
             try {
-                context.contentResolver.openInputStream(uri)?.use { stream ->
-                    viewModel.importFullBackup(stream)
-                } ?: viewModel.reportMessage("تعذّر فتح الملف المختار")
+                val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                if (bytes != null) {
+                    viewModel.importFullBackup(bytes)
+                } else {
+                    viewModel.reportMessage("تعذّر فتح الملف المختار")
+                }
             } catch (e: Exception) {
                 viewModel.reportMessage("خطأ أثناء قراءة الملف: ${e.message ?: "غير معروف"}")
             }

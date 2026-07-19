@@ -19,7 +19,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -299,10 +298,10 @@ class ExportRepositoryImpl @Inject constructor(
         file
     }
 
-    override suspend fun importFullBackup(inputStream: InputStream): OperationResult<ImportSummary> =
+    override suspend fun importFullBackup(bytes: ByteArray): OperationResult<ImportSummary> =
         withContext(Dispatchers.IO) {
             try {
-                val text = inputStream.bufferedReader().use { it.readText() }
+                val text = String(bytes, Charsets.UTF_8)
                 val root = JSONObject(text)
 
                 if (!root.has("materials") || !root.has("transactions")) {

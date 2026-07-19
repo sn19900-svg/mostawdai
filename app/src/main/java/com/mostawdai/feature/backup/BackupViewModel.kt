@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.InputStream
 import javax.inject.Inject
 
 data class BackupUiState(
@@ -65,10 +64,10 @@ class BackupViewModel @Inject constructor(
         }
     }
 
-    fun importFullBackup(inputStream: InputStream) {
+    fun importFullBackup(bytes: ByteArray) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isBusy = true)
-            when (val result = exportRepository.importFullBackup(inputStream)) {
+            when (val result = exportRepository.importFullBackup(bytes)) {
                 is OperationResult.Success -> {
                     val summary: ImportSummary = result.data
                     _uiState.value = _uiState.value.copy(
