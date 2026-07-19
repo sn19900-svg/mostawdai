@@ -31,7 +31,7 @@ class BackupViewModel @Inject constructor(
 
     fun exportExcel() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isBusy = true, message = null)
+            _uiState.value = _uiState.value.copy(isBusy = true)
             val file = exportRepository.exportInventoryToExcel()
             _uiState.value = _uiState.value.copy(
                 isBusy = false,
@@ -43,7 +43,7 @@ class BackupViewModel @Inject constructor(
 
     fun exportPdf() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isBusy = true, message = null)
+            _uiState.value = _uiState.value.copy(isBusy = true)
             val file = exportRepository.exportInventoryToPdf()
             _uiState.value = _uiState.value.copy(
                 isBusy = false,
@@ -55,7 +55,7 @@ class BackupViewModel @Inject constructor(
 
     fun exportFullBackup() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isBusy = true, message = null)
+            _uiState.value = _uiState.value.copy(isBusy = true)
             val file = exportRepository.exportFullBackup()
             _uiState.value = _uiState.value.copy(
                 isBusy = false,
@@ -67,7 +67,7 @@ class BackupViewModel @Inject constructor(
 
     fun importFullBackup(inputStream: InputStream) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isBusy = true, message = null)
+            _uiState.value = _uiState.value.copy(isBusy = true)
             when (val result = exportRepository.importFullBackup(inputStream)) {
                 is OperationResult.Success -> {
                     val summary: ImportSummary = result.data
@@ -81,6 +81,10 @@ class BackupViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun reportMessage(msg: String) {
+        _uiState.value = _uiState.value.copy(message = msg)
     }
 
     fun consumeShareFile() {
