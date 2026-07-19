@@ -50,6 +50,14 @@ fun AddMaterialScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
+                value = state.materialNumber,
+                onValueChange = viewModel::onMaterialNumberChange,
+                label = { Text("رقم المادة (اختياري)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
                 value = state.name,
                 onValueChange = viewModel::onNameChange,
                 label = { Text("اسم المادة") },

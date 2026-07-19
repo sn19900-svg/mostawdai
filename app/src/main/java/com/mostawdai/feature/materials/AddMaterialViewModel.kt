@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AddMaterialUiState(
+    val materialNumber: String = "",
     val name: String = "",
     val unit: String = "",
     val minQuantityAlert: String = "",
@@ -28,6 +29,10 @@ class AddMaterialViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(AddMaterialUiState())
     val uiState: StateFlow<AddMaterialUiState> = _uiState.asStateFlow()
+
+    fun onMaterialNumberChange(value: String) {
+        _uiState.value = _uiState.value.copy(materialNumber = value)
+    }
 
     fun onNameChange(value: String) {
         _uiState.value = _uiState.value.copy(name = value, errorMessage = null)
@@ -51,7 +56,7 @@ class AddMaterialViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = state.copy(isSaving = true)
-            when (val result = addMaterialUseCase(state.name, state.unit, minQty, state.notes)) {
+            when (val result = addMaterialUseCase(state.name, state.unit, state.materialNumber, minQty, state.notes)) {
                 is OperationResult.Success -> {
                     _uiState.value = _uiState.value.copy(isSaving = false, savedSuccessfully = true)
                 }

@@ -11,6 +11,7 @@ class AddMaterialUseCase @Inject constructor(
     suspend operator fun invoke(
         name: String,
         unit: String,
+        materialNumber: String = "",
         minQuantityAlert: Double = 0.0,
         notes: String = ""
     ): OperationResult<Long> {
@@ -29,6 +30,7 @@ class AddMaterialUseCase @Inject constructor(
             Material(
                 name = trimmedName,
                 unit = unit.trim(),
+                materialNumber = materialNumber.trim(),
                 minQuantityAlert = minQuantityAlert,
                 notes = notes.trim()
             )

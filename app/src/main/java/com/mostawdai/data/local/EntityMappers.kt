@@ -6,6 +6,7 @@ import com.mostawdai.domain.model.TransactionType
 
 fun MaterialEntity.toDomain(): Material = Material(
     id = id,
+    materialNumber = materialNumber,
     name = name,
     unit = unit,
     currentQuantity = currentQuantity,
@@ -17,6 +18,7 @@ fun MaterialEntity.toDomain(): Material = Material(
 
 fun Material.toEntity(): MaterialEntity = MaterialEntity(
     id = id,
+    materialNumber = materialNumber,
     name = name,
     unit = unit,
     currentQuantity = currentQuantity,

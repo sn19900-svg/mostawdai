@@ -77,6 +77,14 @@ fun MaterialsListScreen(
                     .padding(16.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("عدد المواد", style = MaterialTheme.typography.bodyMedium)
+                        Text("${summary.materials.size}", style = MaterialTheme.typography.titleMedium)
+                    }
+                    Spacer(Modifier.height(8.dp))
                     Text("قيمة المخزون الإجمالية", style = MaterialTheme.typography.bodyMedium)
                     Text(
                         "%.2f".format(summary.totalInventoryValue),
@@ -153,7 +161,10 @@ private fun MaterialRow(material: Material, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text(material.name, style = MaterialTheme.typography.titleMedium)
+            Text(
+                if (material.materialNumber.isNotBlank()) "#${material.materialNumber} - ${material.name}" else material.name,
+                style = MaterialTheme.typography.titleMedium
+            )
             Text(
                 "%.2f %s".format(material.currentQuantity, material.unit),
                 style = MaterialTheme.typography.bodyMedium,

@@ -4,11 +4,6 @@ import com.mostawdai.domain.model.OperationResult
 import com.mostawdai.domain.repository.MaterialRepository
 import javax.inject.Inject
 
-/**
- * تعديل بيانات مادة موجودة، بما فيها تصحيح يدوي للكمية الحالية ومتوسط التكلفة.
- * ملاحظة: التعديل اليدوي للكمية/التكلفة لا يُنشئ سجل حركة في السجل التاريخي،
- * لأنه تصحيح مباشر وليس عملية إدخال/تخريج فعلية.
- */
 class UpdateMaterialUseCase @Inject constructor(
     private val materialRepository: MaterialRepository
 ) {
@@ -16,6 +11,7 @@ class UpdateMaterialUseCase @Inject constructor(
         materialId: Long,
         name: String,
         unit: String,
+        materialNumber: String,
         currentQuantity: Double,
         averageCost: Double,
         minQuantityAlert: Double,
@@ -38,6 +34,7 @@ class UpdateMaterialUseCase @Inject constructor(
             existing.copy(
                 name = trimmedName,
                 unit = unit.trim(),
+                materialNumber = materialNumber.trim(),
                 currentQuantity = currentQuantity,
                 averageCost = averageCost,
                 minQuantityAlert = minQuantityAlert,

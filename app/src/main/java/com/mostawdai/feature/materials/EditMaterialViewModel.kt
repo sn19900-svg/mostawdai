@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class EditMaterialUiState(
+    val materialNumber: String = "",
     val name: String = "",
     val unit: String = "",
     val currentQuantity: String = "",
@@ -46,6 +47,7 @@ class EditMaterialViewModel @Inject constructor(
             val material = materialRepository.getMaterialById(materialId)
             if (material != null) {
                 _uiState.value = EditMaterialUiState(
+                    materialNumber = material.materialNumber,
                     name = material.name,
                     unit = material.unit,
                     currentQuantity = material.currentQuantity.toString(),
@@ -60,6 +62,7 @@ class EditMaterialViewModel @Inject constructor(
         }
     }
 
+    fun onMaterialNumberChange(v: String) { _uiState.value = _uiState.value.copy(materialNumber = v) }
     fun onNameChange(v: String) { _uiState.value = _uiState.value.copy(name = v, errorMessage = null) }
     fun onUnitChange(v: String) { _uiState.value = _uiState.value.copy(unit = v, errorMessage = null) }
     fun onQuantityChange(v: String) { _uiState.value = _uiState.value.copy(currentQuantity = v, errorMessage = null) }
@@ -79,7 +82,7 @@ class EditMaterialViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSaving = true)
-            when (val result = updateMaterialUseCase(materialId, s.name, s.unit, quantity, avgCost, minQty, s.notes)) {
+            when (val result = updateMaterialUseCase(materialId, s.name, s.unit, s.materialNumber, quantity, avgCost, minQty, s.notes)) {
                 is OperationResult.Success -> {
                     _uiState.value = _uiState.value.copy(isSaving = false, savedSuccessfully = true)
                 }
