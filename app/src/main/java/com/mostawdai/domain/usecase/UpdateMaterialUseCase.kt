@@ -38,7 +38,8 @@ class UpdateMaterialUseCase @Inject constructor(
                 currentQuantity = currentQuantity,
                 averageCost = averageCost,
                 minQuantityAlert = minQuantityAlert,
-                notes = notes.trim()
+                notes = notes.trim(),
+                updatedAt = System.currentTimeMillis()
             )
         )
         return OperationResult.Success(Unit)

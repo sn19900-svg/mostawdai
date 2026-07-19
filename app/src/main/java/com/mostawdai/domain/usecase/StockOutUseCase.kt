@@ -8,11 +8,6 @@ import com.mostawdai.domain.repository.MaterialRepository
 import com.mostawdai.domain.repository.TransactionRepository
 import javax.inject.Inject
 
-/**
- * تخريج (استخدام/بيع) كمية من مادة. التكلفة المحسوبة تلقائياً = الكمية × متوسط التكلفة الحالي.
- * متوسط التكلفة لا يتغيّر عند التخريج، فقط الكمية تنقص.
- * sellingPricePerUnit اختياري: إذا أُدخل، يُستخدم لاحقاً لحساب الربح الفعلي في التقارير.
- */
 class StockOutUseCase @Inject constructor(
     private val materialRepository: MaterialRepository,
     private val transactionRepository: TransactionRepository
@@ -40,7 +35,8 @@ class StockOutUseCase @Inject constructor(
         }
 
         val updatedMaterial = material.copy(
-            currentQuantity = material.currentQuantity - quantity
+            currentQuantity = material.currentQuantity - quantity,
+            updatedAt = System.currentTimeMillis()
         )
 
         materialRepository.updateMaterial(updatedMaterial)

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "materials")
 data class MaterialEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val syncId: String = "",
     val materialNumber: String = "",
     val name: String,
     val unit: String,
@@ -13,5 +14,6 @@ data class MaterialEntity(
     val averageCost: Double,
     val minQuantityAlert: Double,
     val notes: String,
-    val createdAt: Long
+    val createdAt: Long,
+    val updatedAt: Long = 0
 )

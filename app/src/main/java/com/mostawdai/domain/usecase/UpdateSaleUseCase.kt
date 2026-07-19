@@ -42,7 +42,10 @@ class UpdateSaleUseCase @Inject constructor(
         }
 
         materialRepository.updateMaterial(
-            material.copy(currentQuantity = material.currentQuantity - quantityDelta)
+            material.copy(
+                currentQuantity = material.currentQuantity - quantityDelta,
+                updatedAt = System.currentTimeMillis()
+            )
         )
 
         transactionRepository.updateTransaction(
@@ -50,7 +53,8 @@ class UpdateSaleUseCase @Inject constructor(
                 quantity = newQuantity,
                 totalCost = newQuantity * transaction.unitCost,
                 sellingPricePerUnit = newSellingPricePerUnit,
-                note = newNote
+                note = newNote,
+                updatedAt = System.currentTimeMillis()
             )
         )
 

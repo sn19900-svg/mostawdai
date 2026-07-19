@@ -8,10 +8,6 @@ import com.mostawdai.domain.repository.MaterialRepository
 import com.mostawdai.domain.repository.TransactionRepository
 import javax.inject.Inject
 
-/**
- * إدخال كمية جديدة من مادة (شراء/توريد)، مع إعادة حساب متوسط التكلفة المرجّح تلقائياً:
- * المتوسط الجديد = (الكمية الحالية × متوسط التكلفة الحالي + الكمية الجديدة × سعر الشراء) ÷ (الكمية الحالية + الكمية الجديدة)
- */
 class StockInUseCase @Inject constructor(
     private val materialRepository: MaterialRepository,
     private val transactionRepository: TransactionRepository
@@ -44,7 +40,8 @@ class StockInUseCase @Inject constructor(
 
         val updatedMaterial = material.copy(
             currentQuantity = newQty,
-            averageCost = newAvgCost
+            averageCost = newAvgCost,
+            updatedAt = System.currentTimeMillis()
         )
 
         materialRepository.updateMaterial(updatedMaterial)

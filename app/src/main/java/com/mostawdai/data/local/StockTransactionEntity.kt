@@ -19,13 +19,15 @@ import androidx.room.PrimaryKey
 )
 data class StockTransactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val syncId: String = "",
     val materialId: Long?,
     val materialNameSnapshot: String,
-    val type: String, // "STOCK_IN" أو "STOCK_OUT"
+    val type: String,
     val quantity: Double,
     val unitCost: Double,
     val totalCost: Double,
     val sellingPricePerUnit: Double?,
     val note: String,
-    val date: Long
+    val date: Long,
+    val updatedAt: Long = 0
 )
